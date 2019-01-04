@@ -584,7 +584,7 @@
 			<dependency>
 				<groupId>org.openmrs.contrib</groupId>
 				<artifactId>mvpconceptdictionary</artifactId>
-				<version>1.12.0-5a9ecce-20120727</version> 
+				<version>1.12.0-5a9ecce-20120727</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
@@ -865,7 +865,7 @@
 					<groupId>org.codehaus.sonar</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>4.3.2</version>
-				</plugin>	
+				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
@@ -995,9 +995,34 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.8.v20121106</version>
+				<configuration>
+					<webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>
+					<webAppConfig>
+						<contextPath>/${webapp.name}</contextPath>
+						<!--enable reloading static resources -->
+						<overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>
+						<extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>
+					</webAppConfig>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<scanTargets>
+						<scanTarget>../api/target/classes</scanTarget>
+						<scanTarget>../web/target/classes</scanTarget>
+					</scanTargets>
+					<systemProperties>
+						<systemProperty>
+							<name>OPENMRS_INSTALLATION_SCRIPT</name>
+							<value>${OPENMRS_INSTALLATION_SCRIPT}</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>skip-default-test</id>
@@ -1048,7 +1073,7 @@
 			<!-- Uncomment if you want to run performance tests from Eclipse
 			<activation>
 				<activeByDefault>true</activeByDefault>
-			</activation> 
+			</activation>
 			-->
 			<build>
 				<plugins>
@@ -1070,6 +1095,21 @@
 							</execution>
 						</executions>
       				</plugin>
+					<plugin>
+						<groupId>org.eclipse.jetty</groupId>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>9.0.0.v20130308</version>
+						<configuration>
+							<webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>
+							<webAppConfig>
+								<contextPath>/${webapp.name}</contextPath>
+								<!--enable reloading static resources -->
+								<overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>
+								<extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>
+							</webAppConfig>
+							<scanIntervalSeconds>0</scanIntervalSeconds>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 			<properties>
@@ -1204,12 +1244,12 @@
 		<springVersion>3.2.7.RELEASE</springVersion>
 		<hibernateVersion>3.6.5.Final</hibernateVersion>
 		<customArgLineForTesting />
-		
+
 		<sonar.host.url>https://ci.openmrs.org/sonar</sonar.host.url>
 		<sonar.issuesReport.html.enable>true</sonar.issuesReport.html.enable>
 		<sonar.issuesReport.console.enable>true</sonar.issuesReport.console.enable>
 		<sonar.analysis.mode>incremental</sonar.analysis.mode>
-		
+
 		<argLine>-Duser.language=en -Duser.region=US -Xmx512m -XX:MaxPermSize=512m ${customArgLineForTesting}</argLine>
 	</properties>
 </project>
